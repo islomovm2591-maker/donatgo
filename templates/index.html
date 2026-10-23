@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% from "_art.html" import art %}
+{% block body_class %}home{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="wrap">
+    <p class="hours {{ 'open' if is_open else 'closed' }}"><span class="dot"></span>
+      {% if is_open %}{{ t('open_now', start=work_start, end=work_end) }}{% else %}{{ t('closed_now', start=work_start) }}{% endif %}
+    </p>
+    <h1>{{ t('hero_title') }}</h1>
+    <p class="lead">{{ t('hero_text') }}</p>
+  </div>
+</section>
+
+<section class="wrap games" aria-label="{{ t('choose_game') }}">
+  {% for key, g in games.items() %}
+  <a class="game-tile tile-{{ key }}" href="{{ url_for('game_page', game=key) }}">
+    <div class="tile-text">
+      <h2>{{ g.name }}</h2>
+      <p>{{ t('ff_desc' if key == 'freefire' else 'pubg_desc') }}</p>
+      {% if min_prices[key] %}<p class="from">{{ t('from_price', price=fmt_price(min_prices[key], currency)) }}</p>{% endif %}
+    </div>
+    {{ art(key) }}
+  </a>
+  {% endfor %}
+</section>
+
+<section class="wrap how">
+  <h2 class="sec-title">{{ t('how_title') }}</h2>
+  <ol class="steps">
+    {% for s in ['step1', 'step2', 'step3', 'step4'] %}<li>{{ t(s) }}</li>{% endfor %}
+  </ol>
+</section>
+
+<section class="wrap faq">
+  <h2 class="sec-title">{{ t('faq_title') }}</h2>
+  {% for q, a in t('faq') %}
+  <details><summary>{{ q }}</summary><p>{{ a }}</p></details>
+  {% endfor %}
+</section>
+{% endblock %}

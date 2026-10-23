@@ -1,0 +1,28 @@
+{# O'yin rasmlari — o'zimizning oddiy SVG chizmalar (rasmiy logolar ishlatilmaydi) #}
+{% macro art(game) %}
+{% if game == 'freefire' %}
+<svg class="art" viewBox="0 0 160 140" aria-hidden="true">
+  <path d="M20 128c18-30 6-52 26-70 2 18 12 24 18 22-8-26 12-50 30-64-4 26 10 36 22 52 8-6 10-16 8-26 18 18 20 54 6 86z" fill="#FF8F4A" opacity=".55"/>
+  <g transform="translate(46 30)">
+    <path d="M14 0h40l14 22-34 52L0 22z" fill="#fff"/>
+    <path d="M0 22h68L34 74z" fill="#FFE2CF"/>
+    <path d="M14 0l10 22h20L54 0z" fill="#FFF4EC"/>
+    <path d="M24 22L34 74 44 22z" fill="#FFD0B0"/>
+    <path d="M14 0L0 22h24zM54 0l14 22H44z" fill="#FFEADB"/>
+  </g>
+</svg>
+{% else %}
+<svg class="art" viewBox="0 0 160 140" aria-hidden="true">
+  <g fill="#EAD9A6" stroke="#2F3618" stroke-width="3">
+    <ellipse cx="62" cy="112" rx="38" ry="12"/><path d="M24 112v-10h76v10" />
+    <ellipse cx="62" cy="102" rx="38" ry="12"/><path d="M24 102v-10h76v10"/>
+    <ellipse cx="62" cy="92" rx="38" ry="12"/>
+  </g>
+  <g transform="translate(70 18)">
+    <circle cx="36" cy="36" r="34" fill="#F5E7BC" stroke="#2F3618" stroke-width="3"/>
+    <circle cx="36" cy="36" r="25" fill="none" stroke="#2F3618" stroke-width="2" stroke-dasharray="3 4"/>
+    <text x="36" y="45" text-anchor="middle" font-family="Unbounded, system-ui, sans-serif" font-weight="800" font-size="24" fill="#2F3618">UC</text>
+  </g>
+</svg>
+{% endif %}
+{% endmacro %}

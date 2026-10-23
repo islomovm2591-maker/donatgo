@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ t('check_order') }} — {{ site_name }}{% endblock %}
+{% block content %}
+<section class="wrap narrow">
+  <h1>{{ t('check_order') }}</h1>
+  <form class="check-form" action="{{ url_for('check') }}" method="get">
+    <label for="code">{{ t('order_code') }}</label>
+    <div class="row">
+      <input class="field big" id="code" name="code" value="{{ code or '' }}" placeholder="DG-7K3P9Q" autocomplete="off" required>
+      <button class="btn" type="submit">{{ t('check') }}</button>
+    </div>
+    {% if not_found %}<p class="hint err-text">{{ t('not_found') }}</p>{% endif %}
+  </form>
+  {% if my_orders %}
+  <ul class="my-orders">
+    {% for c in my_orders %}<li><a href="{{ url_for('order_page', code=c) }}">{{ c }}</a></li>{% endfor %}
+  </ul>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<a class="back" href="{{ url_for('admin_orders') }}">‹ Buyurtmalar</a>
+<div class="admin-order">
+  <div class="ao-info">
+    <h1>{{ o.code }} <span class="st-label st-{{ o.status }}">{{ {'pending': 'Tekshirilmoqda', 'done': 'Bajarildi', 'rejected': 'Rad etilgan'}[o.status] }}</span></h1>
+    <p class="ao-pack"><span class="chip tile-{{ o.game }}">{{ games[o.game].name }}</span> {{ o.package_label }}</p>
+    <div class="code-box">
+      <span class="code">{{ o.player_id }}</span>
+      <button type="button" class="copy" data-copy="{{ o.player_id }}" data-done="Nusxalandi">ID nusxalash</button>
+    </div>
+    <dl class="details">
+      <dt>Summa</dt><dd>{{ fmt_price(o.price, o.currency) }}</dd>
+      <dt>Davlat</dt><dd>{{ 'O\'zbekiston' if o.region == 'uz' else 'Tojikiston' }}</dd>
+      <dt>Aloqa</dt><dd>{{ o.contact or '—' }}</dd>
+      <dt>Vaqti</dt><dd>{{ o.created_at }}{% if o.updated_at %} (o'zgardi: {{ o.updated_at }}){% endif %}</dd>
+    </dl>
+  </div>
+  <a class="ao-receipt" href="{{ url_for('admin_receipt', name=o.receipt) }}" target="_blank" rel="noopener" title="To'liq o'lchamda ochish">
+    <img src="{{ url_for('admin_receipt', name=o.receipt) }}" alt="To'lov cheki">
+  </a>
+  <form method="post" class="ao-actions">
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+      <label for="note">Mijozga izoh (ixtiyoriy)</label>
+      <textarea class="field" id="note" name="note" rows="2" maxlength="300" placeholder="Masalan: chekdagi summa to'g'ri kelmadi">{{ o.admin_note or '' }}</textarea>
+      {% if o.status == 'pending' %}
+      <button class="btn ok" name="action" value="done">Donat tushirildi — Bajarildi</button>
+      <button class="btn danger" name="action" value="rejected">Rad etish</button>
+      {% else %}
+      <button class="btn ghost" name="action" value="pending">Qayta tekshiruvga qaytarish</button>
+      {% endif %}
+  </form>
+</div>
+{% endblock %}

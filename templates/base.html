@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="{{ regions[region].html_lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ site_name }} — {{ t('tagline') }}{% endblock %}</title>
+<meta name="description" content="{{ t('tagline') }}">
+<link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="logo" href="{{ url_for('index') }}">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="var(--gold)"/><path d="M16 7l7 7-7 11-7-11z" fill="var(--ink)"/></svg>
+      <span>{{ site_name }}</span>
+    </a>
+    <nav class="topnav">
+      <a href="{{ url_for('check') }}">{{ t('check_order') }}</a>
+      <div class="lang" role="group" aria-label="Til / Забон">
+        {% for code, r in regions.items() %}
+        <a href="{{ url_for('set_lang', reg=code, next=request.full_path.rstrip('?')) }}"
+           class="{{ 'on' if code == region }}" title="{{ r.label }}" {% if code == region %}aria-current="true"{% endif %}>{{ r.short }}</a>
+        {% endfor %}
+      </div>
+    </nav>
+  </div>
+</header>
+
+{% with msgs = get_flashed_messages() %}{% if msgs %}
+<div class="wrap">{% for m in msgs %}<p class="flash">{{ m }}</p>{% endfor %}</div>
+{% endif %}{% endwith %}
+
+<main>{% block content %}{% endblock %}</main>
+
+<footer class="footer">
+  <div class="wrap footer-in">
+    <p><strong>{{ site_name }}</strong> — {{ t('tagline') }}</p>
+    <p>{{ t('help') }}: {{ support }}</p>
+    <p class="muted small">{{ t('disclaimer') }}</p>
+  </div>
+</footer>
+<script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

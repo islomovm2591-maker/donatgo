@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>{% if counts and counts.pending %}({{ counts.pending }}) {% endif %}Admin — {{ site_name }}</title>
+<link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="admin">
+{% if session.admin %}
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="logo" href="{{ url_for('admin_orders') }}"><span>{{ site_name }}</span><small>admin</small></a>
+    <nav class="topnav">
+      <a href="{{ url_for('admin_orders') }}">Buyurtmalar{% if counts and counts.pending %} <b class="badge">{{ counts.pending }}</b>{% endif %}</a>
+      <a href="{{ url_for('admin_packages') }}">Narxlar</a>
+      <form method="post" action="{{ url_for('admin_logout') }}"><button class="linkbtn">Chiqish</button></form>
+    </nav>
+  </div>
+</header>
+{% endif %}
+{% with msgs = get_flashed_messages() %}{% if msgs %}
+<div class="wrap">{% for m in msgs %}<p class="flash">{{ m }}</p>{% endfor %}</div>
+{% endif %}{% endwith %}
+<main class="wrap">{% block content %}{% endblock %}</main>
+<script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</body>
+</html>

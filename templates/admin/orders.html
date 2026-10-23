@@ -1,0 +1,33 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="admin-stats" data-poll-pending="{{ counts.pending }}">
+  <div><span class="muted">Tekshirish kerak</span><strong>{{ counts.pending }}</strong></div>
+  <div><span class="muted">Bugun bajarildi</span>
+    <strong>{{ (revenue.get("so'm", (0,0))[1] + revenue.get("сомонӣ", (0,0))[1]) }}</strong></div>
+  <div><span class="muted">Bugungi tushum</span>
+    <strong class="small-strong">{{ fmt_price(revenue.get("so'm", (0,0))[0], "so'm") }}<br>{{ fmt_price(revenue.get("сомонӣ", (0,0))[0], "сомонӣ") }}</strong></div>
+</div>
+
+<nav class="tabs">
+  {% for key, name in [('pending', 'Tekshirilmoqda'), ('done', 'Bajarildi'), ('rejected', 'Rad etilgan'), ('all', 'Hammasi')] %}
+  <a href="{{ url_for('admin_orders', status=key) }}" class="{{ 'on' if status == key }}">{{ name }} <span>{{ counts[key] }}</span></a>
+  {% endfor %}
+</nav>
+
+{% if orders %}
+<ul class="order-list">
+  {% for o in orders %}
+  <li>
+    <a href="{{ url_for('admin_order', code=o.code) }}" class="order-row">
+      <span class="chip tile-{{ o.game }}">{{ 'FF' if o.game == 'freefire' else 'PUBG' }}</span>
+      <span class="or-main"><b>{{ o.package_label }}</b><span class="muted">ID {{ o.player_id }}</span></span>
+      <span class="or-side"><b>{{ fmt_price(o.price, o.currency) }}</b><span class="muted">{{ o.created_at[5:] }} · {{ o.code }}</span></span>
+      <span class="st st-{{ o.status }}" title="{{ o.status }}"></span>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="empty">{% if status == 'pending' %}Tekshirilishi kerak bo'lgan buyurtma yo'q. Yangisi kelsa, bu sahifa o'zi yangilanadi.{% else %}Bu bo'limda hali buyurtma yo'q.{% endif %}</p>
+{% endif %}
+{% endblock %}

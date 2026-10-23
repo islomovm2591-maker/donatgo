@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% from "_art.html" import art %}
+{% block title %}{{ g.name }} — {{ site_name }}{% endblock %}
+{% block body_class %}game-body{% endblock %}
+{% block content %}
+<section class="game-head tile-{{ game }}">
+  <div class="wrap game-head-in">
+    <div>
+      <a class="back" href="{{ url_for('index') }}">‹ {{ t('back') }}</a>
+      <h1>{{ g.name }}</h1>
+      <p>{{ t('ff_desc' if game == 'freefire' else 'pubg_desc') }}</p>
+    </div>
+    {{ art(game) }}
+  </div>
+</section>
+
+<form class="wrap order-form" method="post" enctype="multipart/form-data" novalidate>
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  {% if errors.form %}<p class="flash err">{{ errors.form }}</p>{% endif %}
+
+  <fieldset class="step {{ 'has-err' if errors.player_id }}">
+    <legend><span class="num">1</span>{{ t('player_id') }}</legend>
+    <input class="field big" type="text" name="player_id" inputmode="numeric" autocomplete="off"
+           value="{{ form.get('player_id', '') }}" placeholder="{{ '1234567890' if game == 'freefire' else '5123456789' }}"
+           maxlength="{{ g.id_len[1] + 4 }}" required aria-describedby="pid-hint">
+    <p class="hint" id="pid-hint">{{ errors.player_id or t('player_id_hint') }}</p>
+  </fieldset>
+
+  <fieldset class="step {{ 'has-err' if errors.package }}">
+    <legend><span class="num">2</span>{{ t('choose_pack') }}</legend>
+    <div class="packs">
+      {% for p in pkgs %}
+      {% set price = fmt_price(price_for(p, region), currency) %}
+      <label class="pack">
+        <input type="radio" name="package" value="{{ p.id }}" data-price="{{ price }}" data-label="{{ p.label }}"
+               {{ 'checked' if form.get('package') == p.id|string }} required>
+        <span class="pack-amt">{% if p.amount %}{{ p.amount }}<small>{{ g.unit }}</small>{% else %}<span class="pack-name">{{ p.label }}</span>{% endif %}</span>
+        <span class="pack-price">{{ price }}</span>
+      </label>
+      {% endfor %}
+    </div>
+    {% if errors.package %}<p class="hint">{{ errors.package }}</p>{% endif %}
+  </fieldset>
+
+  <fieldset class="step">
+    <legend><span class="num">3</span>{{ t('payment') }}</legend>
+    <p class="pay-text" data-tpl="{{ t('pay_text', amount='%AMOUNT%') }}" data-empty="{{ t('pay_choose_first') }}">{{ t('pay_choose_first') }}</p>
+    <ul class="cards">
+      {% for line in payment %}
+      <li><span>{{ line }}</span>
+        <button type="button" class="copy" data-copy="{{ line }}" data-done="{{ t('copied') }}">{{ t('copy') }}</button></li>
+      {% endfor %}
+    </ul>
+  </fieldset>
+
+  <fieldset class="step {{ 'has-err' if errors.receipt }}">
+    <legend><span class="num">4</span>{{ t('receipt') }}</legend>
+    <label class="upload">
+      <input type="file" name="receipt" accept="image/jpeg,image/png,image/webp" required>
+      <img class="preview" alt="" hidden>
+      <span class="upload-btn">{{ t('choose_file') }}</span>
+      <span class="upload-name"></span>
+    </label>
+    <p class="hint">{{ errors.receipt or t('receipt_hint') }}</p>
+  </fieldset>
+
+  <fieldset class="step">
+    <legend>{{ t('contact') }} <span class="muted">({{ t('optional') }})</span></legend>
+    <input class="field" type="text" name="contact" maxlength="64" value="{{ form.get('contact', '') }}" placeholder="+998 90 123 45 67">
+    <p class="hint">{{ t('contact_hint') }}</p>
+  </fieldset>
+
+  <div class="paybar">
+    <div><span class="muted">{{ t('total') }}</span><strong class="total">—</strong></div>
+    <button class="btn" type="submit">{{ t('place_order') }}</button>
+  </div>
+</form>
+{% endblock %}

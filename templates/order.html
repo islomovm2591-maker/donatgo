@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ o.code }} — {{ site_name }}{% endblock %}
+{% block content %}
+<section class="wrap narrow order-view" data-code="{{ o.code }}" data-status="{{ o.status }}">
+  {% if new %}<h1 class="ok-title">{{ t('order_received') }}</h1>{% else %}<h1>{{ t('order') }}</h1>{% endif %}
+
+  <div class="code-box">
+    <span class="code">{{ o.code }}</span>
+    <button type="button" class="copy" data-copy="{{ o.code }}" data-done="{{ t('copied') }}">{{ t('copy') }}</button>
+  </div>
+  {% if new %}<p class="hint">{{ t('save_code') }}</p>{% endif %}
+
+  <div class="status status-{{ o.status }}">
+    <p class="status-name">{{ t('status_' + o.status) }}</p>
+    <p>
+      {% if o.status == 'pending' %}{{ t('pending_text') }}
+      {% elif o.status == 'done' %}{{ t('done_text', pack=o.package_label) }}
+      {% else %}{{ t('rejected_text', contact=support) }}{% endif %}
+    </p>
+    {% if o.admin_note %}<p class="note"><b>{{ t('admin_note') }}:</b> {{ o.admin_note }}</p>{% endif %}
+  </div>
+
+  <dl class="details">
+    <dt>{{ t('game') }}</dt><dd>{{ games[o.game].name }}</dd>
+    <dt>{{ t('pack') }}</dt><dd>{{ o.package_label }}</dd>
+    <dt>ID</dt><dd>{{ o.player_id }}</dd>
+    <dt>{{ t('price') }}</dt><dd>{{ fmt_price(o.price, o.currency) }}</dd>
+    <dt>{{ t('created') }}</dt><dd>{{ o.created_at }}</dd>
+  </dl>
+
+  <a class="btn ghost" href="{{ url_for('index') }}">{{ t('new_order') }}</a>
+</section>
+{% endblock %}

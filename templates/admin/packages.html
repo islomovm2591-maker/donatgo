@@ -1,0 +1,22 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<h1>Narxlar</h1>
+<p class="muted">O'chirilgan paketlar saytda ko'rinmaydi.</p>
+<form method="post" class="pkg-form">
+  <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+  <table class="pkg-table">
+    <thead><tr><th>Paket</th><th>so'm</th><th>сомонӣ</th><th>Faol</th></tr></thead>
+    <tbody>
+      {% for p in pkgs %}
+      <tr>
+        <td><span class="chip tile-{{ p.game }}">{{ 'FF' if p.game == 'freefire' else 'PUBG' }}</span> {{ p.label }}</td>
+        <td><input class="field" type="number" min="0" step="100" name="uzs_{{ p.id }}" value="{{ p.price_uzs }}" aria-label="{{ p.label }} so'mda"></td>
+        <td><input class="field" type="number" min="0" name="tjs_{{ p.id }}" value="{{ p.price_tjs }}" aria-label="{{ p.label }} somonida"></td>
+        <td><input type="checkbox" name="active_{{ p.id }}" value="1" {{ 'checked' if p.active }} aria-label="{{ p.label }} faol"></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button class="btn" type="submit">Narxlarni saqlash</button>
+</form>
+{% endblock %}
